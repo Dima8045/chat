@@ -11,10 +11,7 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/{room?}', 'ChatController@index')->name('index');
+Route::post('/send-message', 'ChatController@sendMessage')->name('send');
