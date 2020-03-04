@@ -16,6 +16,11 @@
                     <span v-if="isActive">{{ isActive.name }} typing...</span>
                 </div>
             </div>
+            <div class="col-md-4">
+                <ul>
+                    <li v-for="user in activeUsers">{{ user.name }}</li>
+                </ul>
+            </div>
         </div>
     </div>
 </template>
@@ -27,7 +32,8 @@
           messages: [],
           message: '',
           isActive: false,
-          typingTime: false
+          typingTime: false,
+          activeUsers: [],
         }
       },
       props: [
@@ -36,14 +42,22 @@
       ],
       computed: {
         channel() {
-          return window.Echo.private('room.' + this.room.id)
+          return window.Echo.join('room.' + this.room.id)
         }
       },
       mounted() {
-        console.log(this.room)
         this.channel
-          .listen('Message', (data) => {
-            this.messages.push(data.data.message)
+          .here((users) => {
+            this.activeUsers = users
+          })
+          .joining((user) => {
+            this.activeUsers.push(user)
+          })
+          .leaving((user) => {
+            this.activeUsers.splice(this.activeUsers.indexOf(user), 1)
+          })
+          .listen('Message', ({data}) => {
+            this.messages.push(data.message)
             this.isActive = false
           })
           .listenForWhisper('typing', (e) => {

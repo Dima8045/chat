@@ -12,5 +12,8 @@
 */
 
 Broadcast::channel('room.{roomId}', function ($user, $roomId) {
-    return $user->rooms->contains($roomId);
+    if ($user->rooms->contains($roomId)) {
+        return $user;
+    }
+    return false;
 });
