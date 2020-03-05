@@ -14,11 +14,8 @@
                             </ul>
                         </div>
                     </div>
-<!--                    <div class="form-group">-->
-<!--                        <textarea rows="10" class="form-control" readonly>{{ messages.join('\n')}}</textarea>-->
-<!--                    </div>-->
                     <div class="input-group mt-2">
-                        <input type="text" class="form-control" placeholder="Enter message"  v-model="message" @keydown="actionUser">
+                        <input type="text" class="form-control" placeholder="Enter message"  v-model="message" @keydown="actionUser" @keypress.enter="sendMessage">
                         <div class="input-group-append">
                             <button @click="sendMessage" class="btn btn-outline-secondary" type="button">Send</button>
                         </div>
@@ -97,7 +94,9 @@
     },
     methods: {
       sendMessage() {
-        axios.post('/send-message', {message: this.message, roomId: this.room.id})
+        if (this.message.trim().length > 0) {
+          axios.post('/send-message', { message: this.message, roomId: this.room.id })
+        }
       },
       actionUser() {
         this.channel
