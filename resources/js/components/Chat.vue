@@ -3,11 +3,21 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card p-1">
-                    <div class="card-header">Socket Chat</div>
-                    <div class="form-group">
-                        <textarea rows="10" class="form-control" readonly>{{ messages.join('\n')}}</textarea>
+                    <div class="card-header bg-info"><h4>Socket Chat</h4></div>
+                    <div class="cart-body">
+                        <div ref="messages" id="messages" class="bg-light">
+                            <ul class="list-group list-group-flush">
+                                <li v-for="msg in messages" class="border-bottom border-secondary">
+                                    <b>{{msg.user.name}} </b><span class="text-secondary small">({{ msg.message.timestamp }})</span><br>
+                                    <span class="ml-5">{{ msg.message.message }}</span>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
-                    <div class="input-group">
+<!--                    <div class="form-group">-->
+<!--                        <textarea rows="10" class="form-control" readonly>{{ messages.join('\n')}}</textarea>-->
+<!--                    </div>-->
+                    <div class="input-group mt-2">
                         <input type="text" class="form-control" placeholder="Enter message"  v-model="message" @keydown="actionUser">
                         <div class="input-group-append">
                             <button @click="sendMessage" class="btn btn-outline-secondary" type="button">Send</button>
@@ -25,6 +35,18 @@
     </div>
 </template>
 
+<style>
+    .cart-body {
+        height: 100%;
+        overflow: hidden;
+    }
+    #messages {
+        height: 300px;
+        overflow-y: auto;
+        overflow-x: auto;
+    }
+</style>
+
 <script>
   export default {
     data() {
@@ -36,6 +58,8 @@
         activeUsers: [],
       }
     },
+
+
     props: [
       'room',
       'user'
@@ -58,8 +82,10 @@
         })
         .listen('Message', ({data}) => {
           console.log(data)
-          this.messages.push(data.user.name + ' | ' + data.message.timestamp + ' | ' + data.message.message)
+          this.messages.push(data)
+          this.message = ''
           this.isActive = false
+          setTimeout(() => this.$refs.messages.scrollTop = this.$refs.messages.scrollHeight, 0)
         })
         .listenForWhisper('typing', (e) => {
           this.isActive = e
