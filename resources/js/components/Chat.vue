@@ -78,7 +78,6 @@
           this.activeUsers.splice(this.activeUsers.indexOf(user), 1)
         })
         .listen('Message', ({data}) => {
-          console.log(data)
           this.messages.push(data)
           this.message = ''
           this.isActive = false
