@@ -57,7 +57,8 @@
           this.activeUsers.splice(this.activeUsers.indexOf(user), 1)
         })
         .listen('Message', ({data}) => {
-          this.messages.push(data.message)
+          console.log(data)
+          this.messages.push(data.user.name + ' | ' + data.message.timestamp + ' | ' + data.message.message)
           this.isActive = false
         })
         .listenForWhisper('typing', (e) => {

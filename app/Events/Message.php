@@ -32,6 +32,6 @@ class Message implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PresenceChannel( 'room.' . $this->data['roomId']);
+        return new PresenceChannel( 'room.' . $this->data['message']['roomId']);
     }
 }

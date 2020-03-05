@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Events\Message;
 use App\Room;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 
 class ChatController extends Controller
 {
@@ -32,6 +35,8 @@ class ChatController extends Controller
 
     public function sendMessage(Request $request)
     {
-        Message::dispatch($request->all());
+        $message = Arr::add($request->all(), 'timestamp', Carbon::now()->toDateTimeString());
+        $user = Auth::user();
+        Message::dispatch(compact('message', 'user'));
     }
 }
